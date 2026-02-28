@@ -1,0 +1,24 @@
+{
+  "name": "heroforce",
+  "version": "1.0.0",
+  "description": "Projeto de avaliação técnica",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AttusPacheco/HeroForce.git"
+  },
+  "keywords": [
+    "nestjs",
+    "reactjs",
+    "typescript"
+  ],
+  "author": "Attus Pacheco",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AttusPacheco/HeroForce/issues"
+  },
+  "homepage": "https://github.com/AttusPacheco/HeroForce#readme"
+}

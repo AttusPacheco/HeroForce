@@ -52,7 +52,7 @@ export class UsersService {
         return user;
     }
 
-    async findByEmail(email: string) {
+    async findForAuth(email: string) {
         return this.usersRepository.findOne({
             where: { email },
             select: ['id', 'name', 'email', 'password', 'character'],

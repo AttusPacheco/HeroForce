@@ -1,6 +1,7 @@
-import {Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm';
+import {Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm';
 
-import { Exclude } from 'class-transformer';
+import {Exclude} from 'class-transformer';
+import {Project} from "../projects/project.entity";
 
 @Entity('users')
 export class User {
@@ -25,4 +26,7 @@ export class User {
 
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @OneToMany(() => Project, (project) => project.owner)
+    projects: Project[];
 }

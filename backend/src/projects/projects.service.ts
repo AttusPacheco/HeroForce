@@ -14,13 +14,19 @@ export class ProjectsService {
     ) {
     }
 
-    async findAll(userId: string, page: number, limit: number) {
+    async findAll(userId: string, page: number, limit: number, status?: string|null) {
         const skip = (page - 1) * limit;
+
+        const where: any = {
+            owner: { id: userId },
+            ...(status ? { status } : {}),
+        };
 
         const [projects, total] = await this.projectsRepository.findAndCount({
             relations: ['goals'],
             skip,
             take: limit,
+            where,
             order: {createdAt: 'DESC'},
         });
 
@@ -80,12 +86,13 @@ export class ProjectsService {
         await this.projectsRepository.remove(project);
     }
 
-    async getStats() {
+    async getStats(userId: string) {
         const result = await this.projectsRepository
-            .createQueryBuilder('project')
-            .select('project.status', 'status')
-            .addSelect('COUNT(project.id)', 'total')
-            .groupBy('project.status')
+            .createQueryBuilder()
+            .select('status', 'status')
+            .addSelect('COUNT(id)', 'total')
+            .groupBy('status')
+            .where('"ownerId" = :userId', {userId})
             .getRawMany();
 
         const stats = {

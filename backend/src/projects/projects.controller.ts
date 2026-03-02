@@ -14,11 +14,13 @@ export class ProjectsController {
         @Req() req,
         @Query('page') page = '1',
         @Query('limit') limit = '10',
+        @Query('status') status: string|null = null,
     ) {
         return this.projectsService.findAll(
             req.user.id,
             parseInt(page.toString()),
             parseInt(limit.toString()),
+            status,
         );
     }
 
@@ -28,6 +30,11 @@ export class ProjectsController {
         @Req() req,
     ) {
         return this.projectsService.create(dto, req.user.id);
+    }
+
+    @Get('stats')
+    getStats(@Req() req) {
+        return this.projectsService.getStats(req.user.id);
     }
 
     @Get(':id')
@@ -53,10 +60,5 @@ export class ProjectsController {
         @Req() req,
     ) {
         return this.projectsService.remove(id, req.user.id);
-    }
-
-    @Get('stats')
-    getStats() {
-        return this.projectsService.getStats();
     }
 }

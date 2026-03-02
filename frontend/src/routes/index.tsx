@@ -1,10 +1,12 @@
 import {Route, Routes} from 'react-router-dom';
+import {RequireAuth} from "../auth/RequireAuth.tsx";
+import {RequireGuest} from "../auth/RequireGuest.tsx";
+
 import {Home} from "../pages/Home.tsx";
 import {Login} from "../pages/Login.tsx";
 import {Register} from "../pages/Register.tsx";
-import {RequireAuth} from "../auth/RequireAuth.tsx";
 import {Dashboard} from "../pages/Dashboard.tsx";
-import {RequireGuest} from "../auth/RequireGuest.tsx";
+import {CreateProject} from "../pages/Projects/CreateProject.tsx";
 
 export function AppRoutes() {
     return (
@@ -39,6 +41,15 @@ export function AppRoutes() {
                 element={
                     <RequireAuth>
                         <Dashboard/>
+                    </RequireAuth>
+                }
+            />
+
+            <Route
+                path="/projects/new"
+                element={
+                    <RequireAuth>
+                        <CreateProject/>
                     </RequireAuth>
                 }
             />

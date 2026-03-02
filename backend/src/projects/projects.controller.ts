@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Req, UseGuards} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, ParseUUIDPipe, Patch, Post, Query, Req, UseGuards} from '@nestjs/common';
 import {JwtAuthGuard} from "../auth/guard/jwt-auth.guard";
 import {ProjectsService} from "./projects.service";
 import {CreateProjectDto} from "./dto/create-project.dto";
@@ -10,8 +10,16 @@ export class ProjectsController {
     constructor(private readonly projectsService: ProjectsService) {}
 
     @Get()
-    findAll(@Req() req) {
-        return this.projectsService.findAll(req.user.id);
+    findAll(
+        @Req() req,
+        @Query('page') page = '1',
+        @Query('limit') limit = '10',
+    ) {
+        return this.projectsService.findAll(
+            req.user.id,
+            parseInt(page.toString()),
+            parseInt(limit.toString()),
+        );
     }
 
     @Post()
@@ -45,5 +53,10 @@ export class ProjectsController {
         @Req() req,
     ) {
         return this.projectsService.remove(id, req.user.id);
+    }
+
+    @Get('stats')
+    getStats() {
+        return this.projectsService.getStats();
     }
 }

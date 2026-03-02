@@ -13,10 +13,6 @@ export class OwnershipGuard implements CanActivate {
         const user = request.user;
         const paramId = request.params.id;
 
-        if (user.role === 'ADMIN') {
-            return true;
-        }
-
         if (user.id !== paramId) {
             throw new ForbiddenException(
                 'Você não tem permissão para acessar este recurso',

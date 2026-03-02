@@ -23,7 +23,7 @@ import { ProjectGoalsModule } from './project-goals/project-goals.module';
         password: config.get('DB_PASSWORD'),
         database: config.get('DB_NAME'),
         autoLoadEntities: true,
-        synchronize: true,
+        synchronize: false,
       }),
     }),
 
@@ -35,4 +35,4 @@ import { ProjectGoalsModule } from './project-goals/project-goals.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

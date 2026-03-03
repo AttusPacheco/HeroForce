@@ -1,16 +1,12 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { getProjects, getProjectStats, Project, ProjectStatus } from '../services/projects.service';
 
-import {useAuth} from '../auth/AuthContext';
-import {getProjects, getProjectStats, Project} from '../services/projects.service';
-
-import {Card} from '../layout/components/Card';
-import {StatusBadge} from "../layout/components/StatsBadge.tsx";
-import {ProgressBar} from "../layout/components/ProgressBar.tsx";
+import { Card } from '../layout/components/Card';
+import { StatusBadge } from "../layout/components/StatsBadge.tsx";
+import { ProgressBar } from "../layout/components/ProgressBar.tsx";
 
 export function Dashboard() {
-    const { user } = useAuth();
-
     const [projects, setProjects] = useState<Project[]>([]);
     const [stats, setStats] = useState<any>(null);
     const [loading, setLoading] = useState(true);
@@ -26,7 +22,7 @@ export function Dashboard() {
             setLoading(true);
 
             const [projectsResponse, statsResponse] = await Promise.all([
-                getProjects(page, 6, statusFilter),
+                getProjects(page, 6, statusFilter ? (statusFilter as ProjectStatus) : undefined),
                 getProjectStats(),
             ]);
 
@@ -45,131 +41,125 @@ export function Dashboard() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <header className="bg-white shadow">
-                <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-                    <h1 className="text-xl font-bold text-gray-800">
-                        HeroForce
-                    </h1>
+        <main className="max-w-7xl mx-auto px-6 py-8 space-y-8 w-full">
+            <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Card>
+                    <p className="text-sm text-gray-500">
+                        Projetos Ativos
+                    </p>
+                    <p className="text-2xl font-semibold text-gray-800">
+                        {stats?.total ?? 0}
+                    </p>
+                </Card>
 
-                    <div className="text-sm text-gray-600">
-                        {user?.name}
+                <Card>
+                    <p className="text-sm text-gray-500">
+                        Em Andamento
+                    </p>
+                    <p className="text-2xl font-semibold text-gray-800">
+                        {stats?.inProgress ?? 0}
+                    </p>
+                </Card>
+
+                <Card>
+                    <p className="text-sm text-gray-500">
+                        Concluídos
+                    </p>
+                    <p className="text-2xl font-semibold text-gray-800">
+                        {stats?.done ?? 0}
+                    </p>
+                </Card>
+            </section>
+
+            <section className="space-y-4">
+                <div className="flex items-center justify-between">
+                    <h2 className="text-lg font-semibold text-gray-800">
+                        Projetos
+                    </h2>
+
+                    <div className="flex items-center gap-3">
+                        <select
+                            value={statusFilter}
+                            onChange={(e) => {
+                                setStatusFilter(e.target.value);
+                                setPage(1);
+                            }}
+                            className="border border-gray-300 rounded px-3 py-1.5 text-sm"
+                        >
+                            <option value="">Todos</option>
+                            <option value="pendente">Pendente</option>
+                            <option value="em_andamento">Em andamento</option>
+                            <option value="concluido">Concluído</option>
+                        </select>
+
+                        <Link
+                            to="/projects/new"
+                            className="text-sm px-4 py-2 rounded bg-indigo-600 text-white hover:bg-indigo-700 transition"
+                        >
+                            Novo Projeto
+                        </Link>
                     </div>
                 </div>
-            </header>
 
-            <main className="max-w-7xl mx-auto px-6 py-8 space-y-8">
-                <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {loading ? (
+                    <div className="text-gray-500">Carregando...</div>
+                ) : projects.length === 0 ? (
                     <Card>
                         <p className="text-sm text-gray-500">
-                            Projetos Ativos
-                        </p>
-                        <p className="text-2xl font-semibold text-gray-800">
-                            {stats?.total ?? 0}
+                            Nenhum projeto encontrado
                         </p>
                     </Card>
-
-                    <Card>
-                        <p className="text-sm text-gray-500">
-                            Em Andamento
-                        </p>
-                        <p className="text-2xl font-semibold text-gray-800">
-                            {stats?.inProgress ?? 0}
-                        </p>
-                    </Card>
-
-                    <Card>
-                        <p className="text-sm text-gray-500">
-                            Concluídos
-                        </p>
-                        <p className="text-2xl font-semibold text-gray-800">
-                            {stats?.done ?? 0}
-                        </p>
-                    </Card>
-                </section>
-
-                <section className="space-y-4">
-                    <div className="flex items-center justify-between">
-                        <h2 className="text-lg font-semibold text-gray-800">
-                            Projetos
-                        </h2>
-
-                        <div className="flex items-center gap-3">
-                            <select
-                                value={statusFilter}
-                                onChange={(e) => {
-                                    setStatusFilter(e.target.value);
-                                    setPage(1);
-                                }}
-                                className="border border-gray-300 rounded px-3 py-1.5 text-sm"
-                            >
-                                <option value="">Todos</option>
-                                <option value="pendente">Pendente</option>
-                                <option value="em_andamento">Em andamento</option>
-                                <option value="concluido">Concluído</option>
-                            </select>
-
-                            <Link
-                                to="/projects/new"
-                                className="text-sm px-4 py-2 rounded bg-indigo-600 text-white hover:bg-indigo-700 transition"
-                            >
-                                Novo Projeto
-                            </Link>
-                        </div>
-                    </div>
-
-                    {loading ? (
-                        <div className="text-gray-500">Carregando...</div>
-                    ) : projects.length === 0 ? (
-                        <Card>
-                            <p className="text-sm text-gray-500">
-                                Nenhum projeto encontrado
-                            </p>
-                        </Card>
-                    ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {projects.map(project => (
-                                <Card key={project.id}>
-                                    <h3 className="font-semibold text-gray-800">
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {projects.map(project => (
+                            <Card key={project.id}>
+                                <h3 className="font-semibold text-gray-800">
+                                    <Link to={`/projects/${project.id}`} className="hover:text-indigo-600 transition">
                                         {project.name}
-                                    </h3>
+                                    </Link>
+                                </h3>
 
-                                    <p className="text-sm text-gray-600 mt-1">
-                                        {truncateString(project.description, 500)}
-                                    </p>
+                                <p className="text-sm text-gray-600 mt-1">
+                                    {truncateString(project.description, 500)}
+                                </p>
 
-                                    <div className="mt-3 flex items-center justify-between">
-                                        <StatusBadge status={project.status} />
+                                <div className="mt-3 flex items-center justify-between">
+                                    <StatusBadge status={project.status} />
+                                </div>
+
+                                <div className="mt-4">
+                                    <ProgressBar
+                                        progress={project.goals.progress}
+                                    />
+                                    <div className="mt-4 flex justify-between items-center text-xs text-gray-400">
+                                        <span>{project.goals.completed} / {project.goals.total} metas</span>
+                                        <Link to={`/projects/${project.id}`} className="text-indigo-600 hover:underline">
+                                            Ver Detalhes →
+                                        </Link>
                                     </div>
+                                </div>
+                            </Card>
+                        ))}
+                    </div>
+                )}
+            </section>
 
-                                    <div className="mt-4">
-                                        <ProgressBar
-                                            progress={project.goals.progress}
-                                        />
-                                    </div>
-                                </Card>
-                            ))}
-                        </div>
-                    )}
-                </section>
+            <div className="flex justify-end gap-2">
+                <button
+                    disabled={page === 1}
+                    onClick={() => setPage(p => p - 1)}
+                    className="px-3 py-1 border rounded disabled:opacity-50"
+                >
+                    Anterior
+                </button>
 
-                <div className="flex justify-end gap-2">
-                    <button
-                        disabled={page === 1}
-                        onClick={() => setPage(p => p - 1)}
-                        className="px-3 py-1 border rounded disabled:opacity-50"
-                    >
-                        Anterior
-                    </button>
-
-                    <button
-                        onClick={() => setPage(p => p + 1)}
-                        className="px-3 py-1 border rounded"
-                    >
-                        Próxima
-                    </button>
-                </div>
-            </main>
-        </div>
+                <button
+                    onClick={() => setPage(p => p + 1)}
+                    className="px-3 py-1 border rounded"
+                >
+                    Próxima
+                </button>
+            </div>
+        </main>
     );
 }

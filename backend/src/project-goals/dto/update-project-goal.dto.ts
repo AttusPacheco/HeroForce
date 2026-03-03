@@ -1,10 +1,10 @@
-import {IsDefined, IsEnum, IsInt, IsNotEmpty, IsOptional, IsString, Max, Min} from 'class-validator';
-import {ProjectStatus} from "../../enums/project-status.enum";
+import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { ProjectStatus } from "../../enums/project-status.enum";
 
-export class CreateProjectGoalDto {
+export class UpdateProjectGoalDto {
     @IsString()
     @IsOptional()
-    title: string;
+    title?: string;
 
     @IsString()
     @IsOptional()

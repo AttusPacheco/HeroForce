@@ -1,10 +1,10 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
-import {InjectRepository} from "@nestjs/typeorm";
-import {Project} from "./project.entity";
-import {Repository} from "typeorm";
-import {CreateProjectDto} from "./dto/create-project.dto";
-import {UpdateProjectDto} from "./dto/update-project.dto";
-import {ProjectStatus} from "../enums/project-status.enum";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from "@nestjs/typeorm";
+import { Project } from "./project.entity";
+import { Repository } from "typeorm";
+import { CreateProjectDto } from "./dto/create-project.dto";
+import { UpdateProjectDto } from "./dto/update-project.dto";
+import { ProjectStatus } from "../enums/project-status.enum";
 
 @Injectable()
 export class ProjectsService {
@@ -14,12 +14,12 @@ export class ProjectsService {
     ) {
     }
 
-    async findAll(userId: string, page: number, limit: number, status?: string|null) {
+    async findAll(userId: string, page: number, limit: number, status?: string | null) {
         const skip = (page - 1) * limit;
 
         const where: any = {
             owner: { id: userId },
-            ...(status ? { status } : {}),
+            ...(status && status !== 'undefined' ? { status } : {}),
         };
 
         const [projects, total] = await this.projectsRepository.findAndCount({
@@ -27,7 +27,7 @@ export class ProjectsService {
             skip,
             take: limit,
             where,
-            order: {createdAt: 'DESC'},
+            order: { createdAt: 'DESC' },
         });
 
         return {
@@ -44,7 +44,7 @@ export class ProjectsService {
     async create(dto: CreateProjectDto, userId: string) {
         const project = this.projectsRepository.create({
             ...dto,
-            owner: {id: userId},
+            owner: { id: userId },
         });
 
         return this.projectsRepository.save(project);
@@ -54,7 +54,7 @@ export class ProjectsService {
         const project = await this.projectsRepository.findOne({
             where: {
                 id,
-                owner: {id: userId},
+                owner: { id: userId },
             },
         });
 
@@ -92,7 +92,7 @@ export class ProjectsService {
             .select('status', 'status')
             .addSelect('COUNT(id)', 'total')
             .groupBy('status')
-            .where('"ownerId" = :userId', {userId})
+            .where('"ownerId" = :userId', { userId })
             .getRawMany();
 
         const stats = {

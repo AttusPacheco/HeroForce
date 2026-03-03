@@ -44,7 +44,6 @@ Certifique-se de ter o PostgreSQL rodando. Crie um banco de dados conforme confi
    npm install
    ```
 3. Verifique o arquivo `.env` para garantir as credenciais do banco de dados.
-    1. Gere um hash para o JWT Secret
 4. Inicie o servidor em modo de desenvolvimento:
    ```bash
    npm run start:dev
@@ -63,12 +62,3 @@ Certifique-se de ter o PostgreSQL rodando. Crie um banco de dados conforme confi
    ```bash
    npm run dev
    ```
-
-## Valores da Aplicação
-O projeto reflete os seguintes valores e critérios:
-- **Agilidade**
-- **Encantamento**
-- **Eficiência**
-- **Excelência**
-- **Transparência**
-- **Ambição**

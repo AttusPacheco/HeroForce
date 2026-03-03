@@ -34,6 +34,7 @@ export class ProjectsController {
 
     @Get('stats')
     getStats(@Req() req) {
+        console.log(req.user.id);
         return this.projectsService.getStats(req.user.id);
     }
 
